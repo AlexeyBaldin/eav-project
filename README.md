@@ -1,7 +1,7 @@
-#My EAV project
+# My EAV project
 
 
-##About
+## About
 Project for learn basics of eav pattern
 
 
