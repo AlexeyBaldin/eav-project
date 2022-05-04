@@ -1,9 +1,6 @@
 package com.alexeybaldin.eav;
 
-import com.alexeybaldin.eav.attribute.Attribute;
-import com.alexeybaldin.eav.attribute.AttributeFactory;
-import com.alexeybaldin.eav.entity.Entity;
-import com.alexeybaldin.eav.entity.EntityFactory;
+import com.alexeybaldin.test.EAVTest;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -15,8 +12,14 @@ public class SpringBootStarter {
 
         SpringApplication.run(SpringBootStarter.class);
 
-        Attribute attribute = AttributeFactory.createAttribute("Test2", "a");
+        runTests();
 
-        System.out.println(attribute);
+
+    }
+
+    public static void runTests() {
+        System.out.println("============================================================================TESTING============================================================================");
+        EAVTest.runTests();
+        System.out.println("============================================================================TESTING============================================================================");
     }
 }

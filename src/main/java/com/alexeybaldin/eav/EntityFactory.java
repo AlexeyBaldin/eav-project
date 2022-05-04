@@ -1,4 +1,4 @@
-package com.alexeybaldin.eav.entity;
+package com.alexeybaldin.eav;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -7,10 +7,12 @@ import org.springframework.stereotype.Component;
 public class EntityFactory {
 
     private static EntityRepository entityRepository;
+    private static AttributeRepository attributeRepository;
 
     @Autowired
-    EntityFactory(EntityRepository entityRepository) {
+    EntityFactory(EntityRepository entityRepository, AttributeRepository attributeRepository) {
         EntityFactory.entityRepository = entityRepository;
+        EntityFactory.attributeRepository = attributeRepository;
     }
 
     public static Entity createEntity(String entityName) throws Exception {
@@ -30,6 +32,26 @@ public class EntityFactory {
         EntityImpl entity = entityRepository.findByEntityName(oldEntityName).orElseThrow(() -> new Exception("Entity not found"));
 
         entity.setEntityName(newEntityName);
+
+        return entityRepository.save(entity);
+    }
+
+    public static Entity addNewEntityAttribute(String entityName, Attribute addAttribute) throws Exception {
+        EntityImpl entity = entityRepository.findByEntityName(entityName).orElseThrow(() -> new Exception("Entity not found"));
+
+        System.out.println("===");
+
+        entity.addAttribute(addAttribute);
+
+        System.out.println("=====");
+
+        return entityRepository.save(entity);
+    }
+
+    public static Entity removeEntityAttribute(String entityName, Attribute removeAttribute) throws Exception {
+        EntityImpl entity = entityRepository.findByEntityName(entityName).orElseThrow(() -> new Exception("Entity not found"));
+
+        entity.removeAttribute(removeAttribute);
 
         return entityRepository.save(entity);
     }
