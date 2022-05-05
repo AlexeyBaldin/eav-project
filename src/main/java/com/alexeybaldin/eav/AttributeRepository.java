@@ -1,7 +1,10 @@
 package com.alexeybaldin.eav;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -14,6 +17,11 @@ interface AttributeRepository extends JpaRepository<AttributeImpl, Integer> {
     Boolean existsByAttributeName(String attributeName);
 
     Optional<AttributeImpl> findByAttributeName(String attributeName);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM attribute WHERE attribute.attribute_name LIKE '%Testing%'", nativeQuery = true)
+    void deleteTestingRows();
 }
 
 @javax.persistence.Entity

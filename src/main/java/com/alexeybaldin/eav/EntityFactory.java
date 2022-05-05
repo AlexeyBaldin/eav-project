@@ -2,6 +2,9 @@ package com.alexeybaldin.eav;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
 
 @Component
 public class EntityFactory {
@@ -21,6 +24,7 @@ public class EntityFactory {
         }
 
         EntityImpl entity = new EntityImpl(0, entityName);
+        entity.setAttributes(new HashSet<>());
         return entityRepository.save(entity);
     }
 
@@ -62,6 +66,10 @@ public class EntityFactory {
         entityRepository.delete(entity);
 
         return entity;
+    }
+
+    public static void deleteTestingRows() {
+        entityRepository.deleteTestingRows();
     }
 
 }

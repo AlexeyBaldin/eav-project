@@ -1,9 +1,14 @@
 package com.alexeybaldin.eav;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -13,6 +18,11 @@ interface EntityRepository extends JpaRepository<EntityImpl, Integer> {
     Optional<EntityImpl> findByEntityName(String entityName);
 
     Boolean existsByEntityName(String entityName);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM entity WHERE entity_name LIKE '%Testing%'", nativeQuery = true)
+    void deleteTestingRows();
 }
 
 @javax.persistence.Entity
@@ -62,16 +72,25 @@ class EntityImpl implements Entity {
 
     @Override
     public void addAttribute(Attribute addAttribute) {
+        if(this.attributes == null) {
+            this.attributes = new HashSet<>();
+        }
         this.attributes.add((AttributeImpl) addAttribute);
     }
 
     @Override
     public void removeAttribute(Attribute removeAttribute) {
+        if(this.attributes == null) {
+            this.attributes = new HashSet<>();
+        }
         this.attributes.removeIf(attribute-> attribute.equals(removeAttribute));
     }
 
     @Override
     public void setAttributes(Set<Attribute> attributes) {
+        if(this.attributes == null) {
+            this.attributes = new HashSet<>();
+        }
         this.attributes.clear();
         attributes.forEach((attribute -> this.attributes.add((AttributeImpl) attribute)));
     }
@@ -82,5 +101,18 @@ class EntityImpl implements Entity {
                 "entityId=" + entityId +
                 ", entityName='" + entityName + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EntityImpl entity = (EntityImpl) o;
+        return entityName.equals(entity.entityName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(entityName);
     }
 }

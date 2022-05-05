@@ -58,4 +58,8 @@ public class AttributeFactory {
 
         return attribute;
     }
+
+    public static void deleteTestingRows() {
+        attributeRepository.deleteTestingRows();
+    }
 }
