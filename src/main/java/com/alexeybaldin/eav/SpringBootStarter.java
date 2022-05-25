@@ -1,11 +1,14 @@
 package com.alexeybaldin.eav;
 
-import com.alexeybaldin.itesting.EAVTest;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import com.alexeybaldin.itesting.*;
+import org.reflections.Reflections;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+import java.util.Set;
 
 
 @SpringBootApplication
@@ -16,12 +19,21 @@ public class SpringBootStarter {
     }
 }
 
+
 @Component
-class Tester implements ApplicationRunner {
-    public void run(ApplicationArguments args) {
-        EAVTest.runTests();
+class TestRunner implements CommandLineRunner {
+    @Override
+    public void run(String... args) {
+        Reflections reflections = new Reflections("com.itesting");
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(GreeterTarget.class);
+
+
     }
 }
+
+
+
+
 
 
 

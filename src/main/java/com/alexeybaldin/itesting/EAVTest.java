@@ -21,6 +21,10 @@ import static com.alexeybaldin.constant.Color.*;
 @interface MyTest {
 }
 
+
+
+
+@GreeterTarget
 public class EAVTest {
 
     private static final ArrayList<Method> methods;
