@@ -1,4 +1,4 @@
-package com.alexeybaldin.test;
+package com.alexeybaldin.itesting;
 
 import com.alexeybaldin.eav.Attribute;
 import com.alexeybaldin.eav.AttributeFactory;
@@ -13,7 +13,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 
 import static com.alexeybaldin.constant.Color.*;
 

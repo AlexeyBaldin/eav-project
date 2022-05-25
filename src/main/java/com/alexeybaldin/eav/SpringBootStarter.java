@@ -1,12 +1,12 @@
 package com.alexeybaldin.eav;
 
-import com.alexeybaldin.test.EAVTest;
+import com.alexeybaldin.itesting.EAVTest;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.web.context.ContextLoader;
+import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 
 @SpringBootApplication
 public class SpringBootStarter {
@@ -16,14 +16,14 @@ public class SpringBootStarter {
     }
 }
 
-
-@SpringBootApplication
-class SpringBootTestStarter {
-    public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(SpringBootTestStarter.class);
+@Component
+class Tester implements ApplicationRunner {
+    public void run(ApplicationArguments args) {
         EAVTest.runTests();
-        context.close();
     }
 }
+
+
+
 
 
