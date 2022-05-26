@@ -8,6 +8,8 @@ import com.alexeybaldin.itesting.annotations.MyClearMethod;
 import com.alexeybaldin.itesting.annotations.MyTest;
 import com.alexeybaldin.itesting.annotations.MyTesterTarget;
 
+import static com.alexeybaldin.constant.Color.ANSI_BLUE;
+
 
 @MyTesterTarget
 public class EAVTest {
@@ -16,6 +18,7 @@ public class EAVTest {
     public static void clearDatabase() {
         AttributeFactory.deleteTestingRows();
         EntityFactory.deleteTestingRows();
+        System.out.println(ANSI_BLUE + "EAV CLEAR");
     }
 
     @MyTest
