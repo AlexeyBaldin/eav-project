@@ -43,11 +43,7 @@ public class EntityFactory {
     public static Entity addNewEntityAttribute(String entityName, Attribute addAttribute) throws Exception {
         EntityImpl entity = entityRepository.findByEntityName(entityName).orElseThrow(() -> new Exception("Entity not found"));
 
-        System.out.println("===");
-
         entity.addAttribute(addAttribute);
-
-        System.out.println("=====");
 
         return entityRepository.save(entity);
     }

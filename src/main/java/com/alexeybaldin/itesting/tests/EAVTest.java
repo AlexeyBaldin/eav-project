@@ -1,84 +1,21 @@
-package com.alexeybaldin.itesting;
+package com.alexeybaldin.itesting.tests;
 
 import com.alexeybaldin.eav.Attribute;
 import com.alexeybaldin.eav.AttributeFactory;
 import com.alexeybaldin.eav.Entity;
 import com.alexeybaldin.eav.EntityFactory;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-
-import static com.alexeybaldin.constant.Color.*;
-
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@interface MyTest {
-}
+import com.alexeybaldin.itesting.annotations.MyClearMethod;
+import com.alexeybaldin.itesting.annotations.MyTest;
+import com.alexeybaldin.itesting.annotations.MyTesterTarget;
 
 
-
-
-@GreeterTarget
+@MyTesterTarget
 public class EAVTest {
 
-    private static final ArrayList<Method> methods;
-
-    static {
-        methods = new ArrayList<>();
-        Collections.addAll(methods, EAVTest.class.getMethods());
-    }
-
-    public static void runTests() {
-        Class<EAVTest> eavTestClass = EAVTest.class;
-        StringBuilder stringBuilder = new StringBuilder();
-        System.out.println("=========================================================================START TESTING=========================================================================");
-        methods.forEach(method -> {
-            if(method.isAnnotationPresent(MyTest.class) && method.getReturnType() == boolean.class) {
-                stringBuilder.append("[" + ANSI_CYAN).append(method.getDeclaringClass().getName()).append(ANSI_BLUE).append("   ").append(method.getName()).append(ANSI_RESET).append("]");
-                try {
-                    long time = System.currentTimeMillis();
-                    boolean success = (boolean)method.invoke(eavTestClass);
-                    time = System.currentTimeMillis() - time;
-                    clearDatabase();
-
-                    if(success) {
-                        stringBuilder.append(ANSI_GREEN + "   Test Success    " + ANSI_YELLOW).append((double)time / 1000).append(" sec").append(ANSI_RESET).append('\n');
-                    } else {
-                        stringBuilder.append(ANSI_RED + "    Test Error    " + ANSI_YELLOW).append((double)time / 1000).append(" sec").append(ANSI_RESET).append('\n');
-                    }
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
-        System.out.println("============================================================================RESULTS============================================================================");
-
-        System.out.println(stringBuilder);
-
-        System.out.println("========================================================================FINISH TESTING=========================================================================");
-
-    }
-
-    private static void clearDatabase() {
+    @MyClearMethod
+    public static void clearDatabase() {
         AttributeFactory.deleteTestingRows();
         EntityFactory.deleteTestingRows();
-    }
-
-    @MyTest
-    public static boolean colorSuccessTest() {
-        return true;
-    }
-
-    @MyTest
-    public static boolean colorErrorTest() {
-        return false;
     }
 
     @MyTest
@@ -115,7 +52,6 @@ public class EAVTest {
         try {
             Entity entity = EntityFactory.createEntity("Testing");
             Entity entity1 = EntityFactory.getEntityByName("Testing");
-            System.out.println("qwe");
             if(!entity.equals(entity1)) {
                 return false;
             }

@@ -1,12 +1,11 @@
-package com.alexeybaldin.itesting;
+package com.alexeybaldin.itesting.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface GreeterTarget {
-    String value() default "world";
+public @interface MyTest {
 }
