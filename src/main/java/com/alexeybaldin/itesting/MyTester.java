@@ -1,12 +1,8 @@
 package com.alexeybaldin.itesting;
 
 
-import com.alexeybaldin.itesting.annotations.MyClearMethod;
-import com.alexeybaldin.itesting.annotations.MyTest;
-import com.alexeybaldin.itesting.annotations.MyTesterTarget;
+import com.alexeybaldin.itesting.annotations.*;
 import org.reflections.Reflections;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
@@ -64,21 +60,34 @@ public class MyTester {
             CLASSES.forEach(System.out::println);
         }
 
-        checkClearAnnotationAndFindDefectiveClassNames();
+        checkBeforeAndAfterAnnotationsAndFindDefectiveClasses();
     }
 
-    private static void checkClearAnnotationAndFindDefectiveClassNames() {
+    private static void checkBeforeAndAfterAnnotationsAndFindDefectiveClasses() {
 
         CLASSES.forEach(testClass -> {
             Set<Method> methods = new HashSet<>();
             Collections.addAll(methods, testClass.getMethods());
-            AtomicInteger clearClassCount = new AtomicInteger();
+            AtomicInteger beforeTestCount = new AtomicInteger();
+            AtomicInteger afterTestCount = new AtomicInteger();
+            AtomicInteger beforeAllTestsCount = new AtomicInteger();
+            AtomicInteger afterAllTestsCount = new AtomicInteger();
             methods.forEach(method -> {
-                if (method.isAnnotationPresent(MyClearMethod.class)) {
-                    clearClassCount.getAndIncrement();
+                if (method.isAnnotationPresent(MyBeforeTest.class)) {
+                    beforeTestCount.getAndIncrement();
+                }
+                if (method.isAnnotationPresent(MyAfterTest.class)) {
+                    afterTestCount.getAndIncrement();
+                }
+                if (method.isAnnotationPresent(MyBeforeAllTests.class)) {
+                    beforeAllTestsCount.getAndIncrement();
+                }
+                if (method.isAnnotationPresent(MyAfterAllTests.class)) {
+                    afterAllTestsCount.getAndIncrement();
                 }
             });
-            if (clearClassCount.get() > 1) {
+            if (beforeTestCount.get() > 1 || afterTestCount.get() > 1 ||
+                    beforeAllTestsCount.get() > 1 || afterAllTestsCount.get() > 1) {
                 errorClasses.append(testClass.getName()).append("   ");
             }
         });
@@ -86,14 +95,60 @@ public class MyTester {
 
     private static void testClass(Class<?> testedClass) {
         Set<Method> tests = findTests(testedClass);
-        Method clearMethod = findClearMethod(testedClass);
+        Method beforeAllTestsMethod = findBeforeAllTestsMethod(testedClass);
+        Method afterAllTestsMethod = findAfterAllTestsMethod(testedClass);
+        Method beforeTestMethod = findBeforeTestMethod(testedClass);
+        Method afterTestMethod = findAfterTestMethod(testedClass);
 
-        tests.forEach(method -> testMethod(testedClass, method, clearMethod));
+        if(beforeAllTestsMethod != null) {
+            try {
+                beforeAllTestsMethod.invoke(testedClass);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+
+        tests.forEach(method -> testMethod(testedClass, method, beforeTestMethod, afterTestMethod));
+
+        if(afterAllTestsMethod != null) {
+            try {
+                afterAllTestsMethod.invoke(testedClass);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    private static Method findClearMethod(Class<?> testedClass) {
+    private static Method findBeforeTestMethod(Class<?> testedClass) {
         for (Method method : testedClass.getMethods()) {
-            if (method.isAnnotationPresent(MyClearMethod.class)) {
+            if (method.isAnnotationPresent(MyBeforeTest.class)) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    private static Method findAfterTestMethod(Class<?> testedClass) {
+        for (Method method : testedClass.getMethods()) {
+            if (method.isAnnotationPresent(MyAfterTest.class)) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    private static Method findBeforeAllTestsMethod(Class<?> testedClass) {
+        for (Method method : testedClass.getMethods()) {
+            if (method.isAnnotationPresent(MyBeforeAllTests.class)) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    private static Method findAfterAllTestsMethod(Class<?> testedClass) {
+        for (Method method : testedClass.getMethods()) {
+            if (method.isAnnotationPresent(MyAfterAllTests.class)) {
                 return method;
             }
         }
@@ -113,7 +168,16 @@ public class MyTester {
         return tests;
     }
 
-    private static void testMethod(Class<?> testedClass, Method testedMethod, Method clearMethod) {
+    private static void testMethod(Class<?> testedClass, Method testedMethod,
+                                   Method beforeTestMethod, Method afterTestMethod) {
+        if (beforeTestMethod != null) {
+            try {
+                beforeTestMethod.invoke(testedClass);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         long time = System.currentTimeMillis();
         boolean success = false;
         try {
@@ -123,9 +187,9 @@ public class MyTester {
         }
         time = System.currentTimeMillis() - time;
 
-        if (clearMethod != null) {
+        if (afterTestMethod != null) {
             try {
-                clearMethod.invoke(testedClass);
+                afterTestMethod.invoke(testedClass);
             } catch (Exception e) {
                 e.printStackTrace();
             }

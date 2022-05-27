@@ -4,9 +4,7 @@ import com.alexeybaldin.eav.Attribute;
 import com.alexeybaldin.eav.AttributeFactory;
 import com.alexeybaldin.eav.Entity;
 import com.alexeybaldin.eav.EntityFactory;
-import com.alexeybaldin.itesting.annotations.MyClearMethod;
-import com.alexeybaldin.itesting.annotations.MyTest;
-import com.alexeybaldin.itesting.annotations.MyTesterTarget;
+import com.alexeybaldin.itesting.annotations.*;
 
 import static com.alexeybaldin.constant.Color.ANSI_BLUE;
 import static com.alexeybaldin.constant.Color.ANSI_RESET;
@@ -15,7 +13,9 @@ import static com.alexeybaldin.constant.Color.ANSI_RESET;
 @MyTesterTarget
 public class EAVTest {
 
-    @MyClearMethod
+
+    @MyBeforeAllTests
+    @MyAfterTest
     public static void clearDatabase() {
         AttributeFactory.deleteTestingRows();
         EntityFactory.deleteTestingRows();

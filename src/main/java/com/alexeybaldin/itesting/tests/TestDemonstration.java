@@ -1,18 +1,15 @@
 package com.alexeybaldin.itesting.tests;
 
-import com.alexeybaldin.itesting.annotations.MyClearMethod;
-import com.alexeybaldin.itesting.annotations.MyTest;
-import com.alexeybaldin.itesting.annotations.MyTesterTarget;
+import com.alexeybaldin.itesting.annotations.*;
 
-import static com.alexeybaldin.constant.Color.ANSI_BLUE;
-import static com.alexeybaldin.constant.Color.ANSI_RESET;
+import static com.alexeybaldin.constant.Color.*;
 
 @MyTesterTarget
 public class TestDemonstration {
 
-    @MyClearMethod
+    @MyAfterAllTests
     public static void clear() {
-        System.out.println(ANSI_BLUE + "DEMO clear" + ANSI_RESET);
+        System.out.println(ANSI_BLUE + "DEMO AFTER ALL TESTS" + ANSI_RESET);
     }
 
     @MyTest
