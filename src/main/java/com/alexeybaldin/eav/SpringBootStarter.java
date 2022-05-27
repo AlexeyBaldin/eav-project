@@ -1,6 +1,8 @@
 package com.alexeybaldin.eav;
 
 import com.alexeybaldin.itesting.*;
+import com.alexeybaldin.itesting.annotations.MyTest;
+import com.alexeybaldin.itesting.annotations.MyTesterTarget;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,9 +22,12 @@ public class SpringBootStarter {
 class TestRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
-        MyTester.run();
+        MyTester.run("com.alexeybaldin.itesting.tests", "com.alexeybaldin.eav");
     }
+
 }
+
+
 
 
 

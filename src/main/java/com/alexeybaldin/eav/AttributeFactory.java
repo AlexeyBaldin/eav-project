@@ -1,6 +1,8 @@
 package com.alexeybaldin.eav;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 
@@ -13,6 +15,7 @@ public class AttributeFactory {
     AttributeFactory(AttributeRepository attributeRepository) {
         AttributeFactory.attributeRepository = attributeRepository;
     }
+
 
     public static Attribute createAttribute(String attributeName, String attributeType) throws Exception {
         if(attributeRepository.existsByAttributeName(attributeName)) {
