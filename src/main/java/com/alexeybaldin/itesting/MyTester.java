@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,55 +18,47 @@ import static com.alexeybaldin.constant.Color.*;
 @Component
 public class MyTester {
 
-    private static Set<Class<?>> CLASSES;
+    private MyTester() {}
+
+    private static Set<Class<?>> classes;
 
     private static HashSet<MyTestInformation> testResults;
 
     private static StringBuilder errorClasses;
 
-    public static void run(String... testDirectories) {
-
-        setup(testDirectories);
-
-        if (testDirectories.length < 1) {
-            System.out.println("Empty directories. Please choose one or few with test classes");
-        } else {
-            if (errorClasses.length() == 0 && CLASSES.size() > 0) {
-                System.out.println("=========================================================================START TESTING=========================================================================");
-
-                CLASSES.forEach(MyTester::testClass);
-
-                System.out.println("============================================================================RESULTS============================================================================");
-
-                System.out.println(getTestResults());
-
-                System.out.println("========================================================================FINISH TESTING=========================================================================");
-
-            } else {
-                System.out.println(ANSI_RED + "Please check following classes for errors: " + errorClasses + ANSI_RESET);
-            }
-        }
-
+    static void run(String... testDirectories) {
+        classes.forEach(MyTester::testClass);
     }
 
-    private static void setup(String... testDirectories) {
-        CLASSES = new HashSet<>();
+    static void setup(String... testDirectories) {
+        classes = new HashSet<>();
         testResults = new HashSet<>();
         errorClasses = new StringBuilder();
 
 
         for (String directory : testDirectories) {
             Reflections reflections = new Reflections(directory);
-            CLASSES.addAll(reflections.getTypesAnnotatedWith(MyTesterTarget.class));
-            CLASSES.forEach(System.out::println);
+            classes.addAll(reflections.getTypesAnnotatedWith(MyTesterTarget.class));
         }
 
         checkBeforeAndAfterAnnotationsAndFindDefectiveClasses();
     }
 
+    static int getClassesCount() {
+        return classes.size();
+    }
+
+    static String getErrorClassesString() {
+        return errorClasses.toString();
+    }
+
+    static HashSet<MyTestInformation> getTestResults() {
+        return testResults;
+    }
+
     private static void checkBeforeAndAfterAnnotationsAndFindDefectiveClasses() {
 
-        CLASSES.forEach(testClass -> {
+        classes.forEach(testClass -> {
             Set<Method> methods = new HashSet<>();
             Collections.addAll(methods, testClass.getMethods());
             AtomicInteger beforeTestCount = new AtomicInteger();
@@ -88,7 +81,7 @@ public class MyTester {
             });
             if (beforeTestCount.get() > 1 || afterTestCount.get() > 1 ||
                     beforeAllTestsCount.get() > 1 || afterAllTestsCount.get() > 1) {
-                errorClasses.append(testClass.getName()).append("   ");
+                errorClasses.append(testClass.getName()).append(" - multiple before/after annotations. ");
             }
         });
     }
@@ -161,7 +154,7 @@ public class MyTester {
         Collections.addAll(methods, testedClass.getMethods());
 
         methods.forEach(method -> {
-            if (method.isAnnotationPresent(MyTest.class) && method.getReturnType() == boolean.class) {
+            if (method.isAnnotationPresent(MyTest.class) && method.getReturnType() == boolean.class && Modifier.isStatic(method.getModifiers())) {
                 tests.add(method);
             }
         });
@@ -197,19 +190,4 @@ public class MyTester {
         testResults.add(new MyTestInformation(testedClass, testedMethod, success, (double)time / 1000));
     }
 
-    private static StringBuilder getTestResults() {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        testResults.forEach(testResult -> {
-            stringBuilder.append("[" + ANSI_CYAN).append(testResult.getTestingClass().getName()).append(ANSI_BLUE).append("   ").append(testResult.getTestingMethod().getName()).append(ANSI_RESET).append("]");
-
-            if (testResult.getResult()) {
-                stringBuilder.append(ANSI_GREEN + "   Test Success    " + ANSI_YELLOW).append(testResult.getTimeInSeconds()).append(" sec").append(ANSI_RESET).append('\n');
-            } else {
-                stringBuilder.append(ANSI_RED + "    Test Error    " + ANSI_YELLOW).append(testResult.getTimeInSeconds()).append(" sec").append(ANSI_RESET).append('\n');
-            }
-        });
-
-        return stringBuilder;
-    }
 }

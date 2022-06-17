@@ -22,7 +22,11 @@ public class SpringBootStarter {
 class TestRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
-        MyTester.run("com.alexeybaldin.itesting.tests", "com.alexeybaldin.eav");
+        try {
+            MyTestingFramework.run("com.alexeybaldin.itesting.tests", "com.alexeybaldin.eav");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
