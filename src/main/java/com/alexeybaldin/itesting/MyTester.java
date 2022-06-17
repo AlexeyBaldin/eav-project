@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,6 +47,12 @@ public class MyTester {
 
     static int getClassesCount() {
         return classes.size();
+    }
+
+    static ArrayList<String> getClassesNames() {
+        ArrayList<String> names = new ArrayList<>();
+        classes.forEach(testClass -> names.add(testClass.getName()));
+        return names;
     }
 
     static String getErrorClassesString() {

@@ -6,7 +6,8 @@ import com.alexeybaldin.itesting.annotations.MyTesterTarget;
 @MyTesterTarget
 public class TestDirectoriesDemonstration {
     @MyTest
-    public static boolean a() {
+    public static boolean waitTest() throws InterruptedException {
+        Thread.sleep(1234, 56789);
         return true;
     }
 }
