@@ -4,7 +4,7 @@ import com.alexeybaldin.eav.Attribute;
 import com.alexeybaldin.eav.AttributeFactory;
 import com.alexeybaldin.eav.Entity;
 import com.alexeybaldin.eav.EntityFactory;
-import com.alexeybaldin.itesting.annotations.*;
+import org.mytestingframework.annotations.*;
 
 import static com.alexeybaldin.constant.Color.ANSI_BLUE;
 import static com.alexeybaldin.constant.Color.ANSI_RESET;

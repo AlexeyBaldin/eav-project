@@ -1,8 +1,6 @@
 package com.alexeybaldin.eav;
 
-import com.alexeybaldin.itesting.*;
-import com.alexeybaldin.itesting.annotations.MyTest;
-import com.alexeybaldin.itesting.annotations.MyTesterTarget;
+import org.mytestingframework.MyTestingFramework;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,7 +21,10 @@ class TestRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
         try {
-            MyTestingFramework.run("com.alexeybaldin.itesting.tests", "com.alexeybaldin.eav");
+            MyTestingFramework.run("com.alexeybaldin.itesting.tests");
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

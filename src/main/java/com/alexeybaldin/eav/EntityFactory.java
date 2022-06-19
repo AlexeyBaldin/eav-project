@@ -2,7 +2,6 @@ package com.alexeybaldin.eav;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 
