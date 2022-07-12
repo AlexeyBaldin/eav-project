@@ -4,6 +4,7 @@ import org.mytestingframework.MyTestingFramework;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 
@@ -11,7 +12,8 @@ import org.springframework.stereotype.Component;
 public class SpringBootStarter {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringBootStarter.class);
+        ConfigurableApplicationContext run = SpringApplication.run(SpringBootStarter.class);
+        run.close();
     }
 }
 
@@ -22,8 +24,6 @@ class TestRunner implements CommandLineRunner {
     public void run(String... args) {
         try {
             MyTestingFramework.run("com.alexeybaldin.itesting.tests");
-
-
 
         } catch (Exception e) {
             e.printStackTrace();
